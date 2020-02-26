@@ -8,7 +8,14 @@
 
 import React, {useState} from 'react';
 import axios from 'axios';
-import {View, StyleSheet, Text, TextInput, ScrollView} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  ScrollView,
+  Image,
+} from 'react-native';
 
 const App: () => React$Node = () => {
   const apiurl = 'http://www.omdbapi.com/?apikey=dfe6d885';
@@ -36,13 +43,22 @@ const App: () => React$Node = () => {
           style={styles.searchbox}
           onChangeText={text =>
             setState(prevState => {
-              return {...prevState, s: text}
+              return {...prevState, s: text};
           })}
           onSubmitEditing={search}
           value={state.s} />
         <ScrollView style={styles.results}>
           {state.results.map(result => (
             <View key={result.imdbID} style={styles.result}>
+              <Image
+                source={{uri: result.Poster}}
+                style={{
+                  width: '100%',
+                  height: 300,
+                  marginHorizontal: 'auto',
+                }}
+                resizeMode="cover"
+              />
               <Text style={styles.heading}>{result.Title}</Text>
             </View>
           ))}
