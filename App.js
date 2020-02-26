@@ -16,6 +16,7 @@ import {
   ScrollView,
   Image,
   TouchableHighlight,
+  Modal,
 } from 'react-native';
 
 const App: () => React$Node = () => {
@@ -39,7 +40,7 @@ const App: () => React$Node = () => {
   const openPopup = id => {
     axios(apiurl + '&i=' + id).then(({data}) => {
       let result = data;
-      console.log(result);
+
       setState(prevState => {
         return {...prevState, selected: result};
       });
@@ -55,7 +56,8 @@ const App: () => React$Node = () => {
           onChangeText={text =>
             setState(prevState => {
               return {...prevState, s: text};
-          })}
+            })
+          }
           onSubmitEditing={search}
           value={state.s} />
         <ScrollView style={styles.results}>
@@ -78,6 +80,26 @@ const App: () => React$Node = () => {
             </TouchableHighlight>
           ))}
         </ScrollView>
+
+        <Modal
+          animationType="fade"
+          transparent={false}
+          visible={(typeof state.selected.Title != 'undefined')}>
+          <View style={styles.popup}>
+            <Text style={styles.poptitle}>{state.selected.Title}</Text>
+            <Text style={{marginBottom: 20}}>
+              Rating: {state.selected.imdbRating}
+            </Text>
+            <Text>{state.selected.Plot}</Text>
+            <TouchableHighlight
+              onPress={() => setState(prevState => {
+                return {...prevState, selected: {}};
+              })}
+            >
+              <Text style={styles.closeBtn}>Close</Text>
+            </TouchableHighlight>
+          </View>
+        </Modal>
       </View>
     </>
   );
@@ -122,6 +144,21 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     padding: 20,
     backgroundColor: '#445565',
+  },
+  popup: {
+    padding: 20,
+  },
+  poptitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 20,
+  },
+  closeBtn: {
+    padding: 20,
+    fontSize: 20,
+    color: '#FFF',
+    fontWeight: '700',
+    backgroundColor: '#2484c4',
   },
 });
 
