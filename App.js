@@ -15,6 +15,7 @@ import {
   TextInput,
   ScrollView,
   Image,
+  TouchableHighlight,
 } from 'react-native';
 
 const App: () => React$Node = () => {
@@ -35,6 +36,16 @@ const App: () => React$Node = () => {
     });
   };
 
+  const openPopup = id => {
+    axios(apiurl + '&i=' + id).then(({data}) => {
+      let result = data;
+      console.log(result);
+      setState(prevState => {
+        return {...prevState, selected: result};
+      });
+    });
+  };
+
   return (
     <>
       <View style={styles.container}>
@@ -49,18 +60,22 @@ const App: () => React$Node = () => {
           value={state.s} />
         <ScrollView style={styles.results}>
           {state.results.map(result => (
-            <View key={result.imdbID} style={styles.result}>
-              <Image
-                source={{uri: result.Poster}}
-                style={{
-                  width: '100%',
-                  height: 300,
-                  marginHorizontal: 'auto',
-                }}
-                resizeMode="cover"
-              />
-              <Text style={styles.heading}>{result.Title}</Text>
-            </View>
+            <TouchableHighlight
+              key={result.imdbID}
+              onPress={() => openPopup(result.imdbID)}>
+              <View style={styles.result}>
+                <Image
+                  source={{uri: result.Poster}}
+                  style={{
+                    width: '100%',
+                    height: 300,
+                    marginHorizontal: 'auto',
+                  }}
+                  resizeMode="cover"
+                />
+                <Text style={styles.heading}>{result.Title}</Text>
+              </View>
+            </TouchableHighlight>
           ))}
         </ScrollView>
       </View>
